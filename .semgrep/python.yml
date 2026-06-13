@@ -1,0 +1,38 @@
+rules:
+  - id: python-no-hardcoded-secrets
+    severity: ERROR
+    languages: [python]
+    message: Hardcoded secret detected. Use environment variables instead.
+    patterns:
+      - pattern-either:
+          - pattern: SECRET_KEY = "..."
+          - pattern: password = "..."
+          - pattern: api_key = "..."
+          - pattern: token = "..."
+    pattern-not: SECRET_KEY = os.environ.get(...)
+
+  - id: python-no-eval
+    severity: ERROR
+    languages: [python]
+    message: Avoid using eval() which can lead to code injection.
+    pattern: eval(...)
+
+  - id: python-no-exec
+    severity: ERROR
+    languages: [python]
+    message: Avoid using exec() which can lead to code injection.
+    pattern: exec(...)
+
+  - id: python-request-no-verify
+    severity: WARNING
+    languages: [python]
+    message: SSL verification is disabled. This is insecure.
+    patterns:
+      - pattern: requests.$METHOD(..., verify=False, ...)
+
+  - id: python-debug-enabled
+    severity: WARNING
+    languages: [python]
+    message: Debug mode should be disabled in production.
+    patterns:
+      - pattern: app.run(..., debug=True, ...)

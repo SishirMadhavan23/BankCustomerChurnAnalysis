@@ -1,0 +1,31 @@
+# TruffleHog Configuration for Secret Scanning
+
+allow_list:
+  description: "Allowlisted patterns for false positives"
+  strings:
+    - "your-secret-key-change-in-production"
+    - "changeme"
+    - "your_"
+    - "example.com"
+    - "placeholder"
+  paths:
+    - "tests/"
+    - ".env.example"
+
+detectors:
+  - name: "High Entropy Strings"
+    enabled: true
+    max_entropy: 4.5
+    min_length: 16
+  - name: "Private Keys"
+    enabled: true
+  - name: "AWS Keys"
+    enabled: true
+  - name: "GitHub Tokens"
+    enabled: true
+  - name: "Slack Tokens"
+    enabled: true
+  - name: "JWT Tokens"
+    enabled: true
+  - name: "Flask Secret Keys"
+    enabled: true

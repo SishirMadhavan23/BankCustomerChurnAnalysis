@@ -1,0 +1,175 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+    tags: ['v*']
+  pull_request:
+    branches: [main]
+
+env:
+  PYTHON_VERSION: '3.10'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.10', '3.11']
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Train model
+      run: python -m app.model
+
+    - name: Test with pytest
+      run: |
+        pytest tests/ --cov=app --cov-report=term --cov-report=xml --cov-fail-under=80
+
+    - name: Upload coverage report
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        fail_ci_if_error: false
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Lint with Ruff
+      run: ruff check app/ tests/
+    - name: Lint with Pylint
+      run: pylint app/ --fail-under=7.0 || true
+    - name: Lint with Flake8
+      run: flake8 app/ --max-line-length=100 --count
+
+  format:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Check formatting with Ruff
+      run: ruff format --check app/
+    - name: Check with Pyupgrade
+      run: pyupgrade --py38-plus $(find app/ -name "*.py") || true
+
+  type_check:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Type check with Mypy
+      run: mypy app/
+
+  security:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Security scan with Bandit
+      run: bandit -r app/ -x tests
+    - name: SAST with Semgrep
+      run: semgrep --config=.semgrep/ app/ || true
+    - name: Secret scanning with Gitleaks
+      uses: gitleaks/gitleaks-action@v2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Secret scanning with TruffleHog
+      run: |
+        pip install trufflehog
+        trufflehog filesystem . --no-verification || true
+
+  dependency_audit:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    - name: Install pip-audit
+      run: pip install pip-audit
+    - name: Audit Python dependencies
+      run: pip-audit -r requirements.txt --desc --strict
+    - name: Audit npm dependencies
+      run: |
+        if [ -f "package-lock.json" ]; then
+          npm audit --audit-level=high
+        fi
+      continue-on-error: true
+
+  coverage:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Run coverage
+      run: |
+        python -m app.model
+        pytest tests/ --cov=app --cov-report=term --cov-report=html --cov-fail-under=80
+    - name: Upload coverage HTML
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage-html
+        path: htmlcov/
+
+  release:
+    runs-on: ubuntu-latest
+    needs: [test, lint, format, type_check, security, dependency_audit, coverage]
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+    - uses: actions/checkout@v4
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        generate_release_notes: true
+        files: |
+          model/churn_model.pkl

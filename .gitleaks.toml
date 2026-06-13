@@ -1,0 +1,66 @@
+# Gitleaks Configuration for Secret Scanning
+
+[allowlist]
+description = "Allowlisted files and patterns to exclude from secret scanning"
+
+paths = [
+    # Test files may contain mock secrets
+    "tests/",
+]
+
+regexes = [
+    # Allow example/template values
+    r"your-secret-key-",
+    r"SECRET_KEY=changeme",
+    r"api_key=your_",
+    r"password=your_",
+    r"example\.com",
+    r"placeholder",
+    r"CHANGEME",
+    r"test-key",
+    r"12345",
+    r"00000",
+]
+
+# Rules for detecting secrets
+[[rules]]
+id = "generic-api-key"
+description = "Generic API Key"
+regex = '''(?i)(?:key|api|token|secret|passwd|password|auth|access)(?:[0-9a-z_-]*).{0,20}(?:['\"][0-9a-zA-Z]{16,}['\"])'''
+tags = ["key", "api", "generic"]
+
+[[rules]]
+id = "aws-access-key"
+description = "AWS Access Key ID"
+regex = '''(?:A3T[A-Z0-9]|AKIA|AGPA|AIDA|AROA|AIPA|ANPA|ANVA|ASIA)[A-Z0-9]{16}'''
+tags = ["key", "AWS"]
+
+[[rules]]
+id = "github-token"
+description = "GitHub Personal Access Token"
+regex = '''(?:ghp|gho|ghu|ghs|ghr)_[A-Za-z0-9_]{36,}'''
+tags = ["key", "GitHub"]
+
+[[rules]]
+id = "slack-token"
+description = "Slack Token"
+regex = '''xox[baprs]-[0-9a-zA-Z-]{10,}'''
+tags = ["key", "Slack"]
+
+[[rules]]
+id = "private-key"
+description = "Private Key"
+regex = '''-----BEGIN\s?(?:RSA|DSA|EC|OPENSSH|PGP)?\s?PRIVATE\s?KEY-----'''
+tags = ["key", "private"]
+
+[[rules]]
+id = "flask-secret"
+description = "Flask Secret Key"
+regex = '''SECRET_KEY\s*=\s*['\"][a-zA-Z0-9!@#$%^&*()_+=-]{16,}['"]'''
+tags = ["key", "flask"]
+
+[[rules]]
+id = "jwt-token"
+description = "JWT Token"
+regex = '''eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}'''
+tags = ["key", "jwt"]

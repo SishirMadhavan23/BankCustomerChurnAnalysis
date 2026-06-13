@@ -5,10 +5,25 @@ build-backend = "setuptools.backends._legacy:_Backend"
 [project]
 name = "bank-customer-churn-analysis"
 version = "1.0.0"
-description = "AI-powered Bank Customer Churn Analysis platform"
+description = "AI-powered Bank Customer Churn Analysis platform with multi-language support (English, Hindi, Telugu), Random Forest ML predictions, and interactive dashboards."
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "MIT"}
+keywords = ["banking", "churn-analysis", "machine-learning", "flask", "data-science", "customer-retention"]
+authors = [
+    {name = "BCCA Team", email = "bcca@example.com"}
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Financial and Insurance Industry",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Natural Language :: English",
+    "Natural Language :: Hindi",
+    "Natural Language :: Telugu",
+]
 dependencies = [
     "flask>=3.0",
     "flask-cors>=4.0",
@@ -19,6 +34,11 @@ dependencies = [
     "gunicorn>=21.2",
     "python-dotenv>=1.0",
 ]
+
+[project.urls]
+Homepage = "https://github.com/yourusername/bank-customer-churn-analysis"
+Repository = "https://github.com/yourusername/bank-customer-churn-analysis"
+Documentation = "https://github.com/yourusername/bank-customer-churn-analysis#readme"
 
 [tool.ruff]
 line-length = 100
@@ -65,3 +85,79 @@ exclude_lines = [
 
 [tool.setuptools.packages.find]
 where = ["app"]
+
+# ============================================
+# Pylint Configuration
+# ============================================
+[tool.pylint]
+master.py-version = "3.10"
+master.jobs = 4
+master.persistent = false
+master.unsafe-load-any-extension = false
+MESSAGES CONTROL.disable = [
+    "C0114",  # missing-module-docstring
+    "C0115",  # missing-class-docstring
+    "C0116",  # missing-function-docstring
+    "R0903",  # too-few-public-methods
+    "R0913",  # too-many-arguments
+    "W0511",  # fixme
+]
+REPORTS.output-format = "colorized"
+BASIC.good-names = [
+    "i", "j", "k", "x", "y", "z", "X", "y", "_", "df", "id", "ex", "db",
+]
+DESIGN.max-args = 10
+DESIGN.max-locals = 20
+DESIGN.max-attributes = 10
+DESIGN.max-statements = 100
+
+# ============================================
+# Flake8 Configuration
+# ============================================
+[tool.flake8]
+max-line-length = 100
+extend-ignore = [
+    "E203",  # whitespace before ':'
+    "E501",  # line too long (handled by black)
+    "W503",  # line break before binary operator
+    "W504",  # line break after binary operator
+    "E402",  # module level import not at top
+]
+exclude = [
+    ".git",
+    "__pycache__",
+    "venv",
+    ".venv",
+    "env",
+    "model",
+    "tests",
+]
+per-file-ignores = []
+max-complexity = 18
+max-doc-length = 120
+
+# ============================================
+# Pyupgrade Configuration
+# ============================================
+[tool.pyupgrade]
+py38-plus = true
+keep-percent-format = false
+keep-mock = false
+
+# ============================================
+# Semgrep Configuration
+# ============================================
+# See .semgrep/ directory for rules
+
+# ============================================
+# Gitleaks Configuration
+# ============================================
+# See .gitleaks.toml for rules
+
+# ============================================
+# Dependency Audit Configuration
+# ============================================
+[tool.pip-audit]
+strict = true
+desc = true
+vulnerability-service = "osv"
