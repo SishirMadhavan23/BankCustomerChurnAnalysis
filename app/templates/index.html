@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="app_title">Bank Customer Churn Analysis</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <span class="nav-logo">📊</span>
+                <span class="nav-title" data-i18n="app_title">Bank Customer Churn Analysis</span>
+            </div>
+            <div class="nav-toggle" id="navToggle">☰</div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#home" class="active" data-i18n="nav_home" data-section="home">Home</a></li>
+                <li><a href="#predict" data-i18n="nav_predict" data-section="predict">Predict</a></li>
+                <li><a href="#dashboard" data-i18n="nav_dashboard" data-section="dashboard">Dashboard</a></li>
+                <li><a href="#about" data-i18n="nav_about" data-section="about">About</a></li>
+                <li class="lang-selector">
+                    <select id="langSelect" onchange="switchLanguage(this.value)">
+                        <option value="en">English</option>
+                        <option value="hi">हिंदी</option>
+                        <option value="te">తెలుగు</option>
+                    </select>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Home / Hero Section -->
+        <section id="home" class="section hero-section">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="hero-text">
+                        <h1 data-i18n="hero_title">Predict Customer Churn with AI</h1>
+                        <p class="hero-subtitle" data-i18n="app_subtitle">AI-Powered Churn Prediction & Analytics Platform</p>
+                        <p class="hero-desc" data-i18n="hero_desc">Leverage machine learning to identify at-risk customers and take proactive retention actions.</p>
+                        <div class="hero-actions">
+                            <a href="#predict" class="btn btn-primary btn-lg" data-i18n="cta_start">Get Started</a>
+                            <a href="#about" class="btn btn-outline btn-lg" data-i18n="cta_learn">Learn More</a>
+                        </div>
+                    </div>
+                    <div class="hero-visual">
+                        <div class="hero-card">
+                            <div class="hero-card-header">
+                                <span>📈</span>
+                                <span>Churn Analysis</span>
+                            </div>
+                            <div class="hero-card-body">
+                                <div class="stat-row">
+                                    <span data-i18n="dashboard_churn_rate">Churn Rate</span>
+                                    <span class="stat-value" id="heroChurnRate">--</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span data-i18n="dashboard_total">Total Customers</span>
+                                    <span class="stat-value" id="heroTotalCustomers">--</span>
+                                </div>
+                                <div class="stat-row">
+                                    <span>Model Accuracy</span>
+                                    <span class="stat-value" id="heroAccuracy">--</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Predict Section -->
+        <section id="predict" class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 data-i18n="predict_title">Customer Churn Prediction</h2>
+                    <p data-i18n="predict_desc">Enter customer details below to predict churn probability</p>
+                </div>
+                <div class="predict-grid">
+                    <div class="predict-form-card">
+                        <form id="predictForm" onsubmit="return submitPrediction(event)">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="creditScore" data-i18n="predict_credit_score">Credit Score</label>
+                                    <input type="number" id="creditScore" name="credit_score" min="300" max="900" value="650" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="geography" data-i18n="predict_geography">Geography</label>
+                                    <select id="geography" name="geography" required>
+                                        <option value="France">France</option>
+                                        <option value="Spain">Spain</option>
+                                        <option value="Germany">Germany</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="gender" data-i18n="predict_gender">Gender</label>
+                                    <select id="gender" name="gender" required>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="age" data-i18n="predict_age">Age</label>
+                                    <input type="number" id="age" name="age" min="18" max="100" value="35" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="tenure" data-i18n="predict_tenure">Tenure (years)</label>
+                                    <input type="number" id="tenure" name="tenure" min="0" max="10" value="5" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="balance" data-i18n="predict_balance">Balance ($)</label>
+                                    <input type="number" id="balance" name="balance" min="0" max="500000" value="50000" step="0.01" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="numProducts" data-i18n="predict_num_products">Number of Products</label>
+                                    <select id="numProducts" name="num_products" required>
+                                        <option value="1">1</option>
+                                        <option value="2" selected>2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="hasCrCard" data-i18n="predict_has_cr_card">Has Credit Card</label>
+                                    <select id="hasCrCard" name="has_cr_card" required>
+                                        <option value="1" data-i18n="yes">Yes</option>
+                                        <option value="0" data-i18n="no">No</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="isActive" data-i18n="predict_is_active">Is Active Member</label>
+                                    <select id="isActive" name="is_active_member" required>
+                                        <option value="1" data-i18n="yes">Yes</option>
+                                        <option value="0" data-i18n="no">No</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="salary" data-i18n="predict_salary">Estimated Salary ($)</label>
+                                    <input type="number" id="salary" name="estimated_salary" min="0" max="500000" value="75000" step="0.01" required>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-full" id="predictBtn" data-i18n="predict_btn">Predict Churn</button>
+                        </form>
+                    </div>
+                    <div class="predict-result-card" id="predictResult" style="display:none;">
+                        <div class="result-header">
+                            <h3 data-i18n="predict_result">Churn Prediction Result</h3>
+                        </div>
+                        <div class="result-gauge" id="resultGauge">
+                            <div class="gauge-container">
+                                <div class="gauge-ring">
+                                    <div class="gauge-fill" id="gaugeFill"></div>
+                                </div>
+                                <div class="gauge-center">
+                                    <span class="gauge-value" id="gaugeValue">0%</span>
+                                    <span class="gauge-label" data-i18n="predict_probability">Churn Probability</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="result-details">
+                            <div class="result-risk" id="resultRisk">
+                                <span class="risk-badge" id="riskBadge">--</span>
+                            </div>
+                            <div class="result-message" id="resultMessage">--</div>
+                            <div class="result-confidence">
+                                <span data-i18n="predict_confidence">Confidence</span>: <span id="confidenceValue">--</span>
+                            </div>
+                            <button class="btn btn-outline btn-full" onclick="resetPrediction()" data-i18n="predict_again">Predict Again</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 data-i18n="dashboard_title">Analytics Dashboard</h2>
+                </div>
+                <div class="dashboard-loading" id="dashboardLoading">
+                    <div class="spinner"></div>
+                    <span data-i18n="loading">Loading...</span>
+                </div>
+                <div class="dashboard-content" id="dashboardContent" style="display:none;">
+                    <!-- KPI Cards -->
+                    <div class="kpi-grid">
+                        <div class="kpi-card kpi-primary">
+                            <div class="kpi-icon">👥</div>
+                            <div class="kpi-info">
+                                <span class="kpi-value" id="kpiTotal">--</span>
+                                <span class="kpi-label" data-i18n="dashboard_total">Total Customers</span>
+                            </div>
+                        </div>
+                        <div class="kpi-card kpi-danger">
+                            <div class="kpi-icon">🚪</div>
+                            <div class="kpi-info">
+                                <span class="kpi-value" id="kpiChurned">--</span>
+                                <span class="kpi-label" data-i18n="dashboard_churned">Churned</span>
+                            </div>
+                        </div>
+                        <div class="kpi-card kpi-success">
+                            <div class="kpi-icon">✅</div>
+                            <div class="kpi-info">
+                                <span class="kpi-value" id="kpiRetained">--</span>
+                                <span class="kpi-label" data-i18n="dashboard_retained">Retained</span>
+                            </div>
+                        </div>
+                        <div class="kpi-card kpi-warning">
+                            <div class="kpi-icon">⚠️</div>
+                            <div class="kpi-info">
+                                <span class="kpi-value" id="kpiChurnRate">--</span>
+                                <span class="kpi-label" data-i18n="dashboard_churn_rate">Churn Rate</span>
+                            </div>
+                        </div>
+                        <div class="kpi-card kpi-info">
+                            <div class="kpi-icon">🔥</div>
+                            <div class="kpi-info">
+                                <span class="kpi-value" id="kpiActive">--</span>
+                                <span class="kpi-label" data-i18n="dashboard_active_members">Active Members</span>
+                            </div>
+                        </div>
+                        <div class="kpi-card kpi-secondary">
+                            <div class="kpi-icon">📅</div>
+                            <div class="kpi-info">
+                                <span class="kpi-value" id="kpiAvgAge">--</span>
+                                <span class="kpi-label" data-i18n="dashboard_avg_age">Avg Age</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts -->
+                    <div class="charts-grid">
+                        <div class="chart-card">
+                            <h3 data-i18n="chart_churn_dist">Churn Distribution</h3>
+                            <div class="chart-container">
+                                <canvas id="churnDistChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="chart-card">
+                            <h3 data-i18n="chart_geo_dist">Geographic Distribution</h3>
+                            <div class="chart-container">
+                                <canvas id="geoDistChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="chart-card">
+                            <h3 data-i18n="chart_age_dist">Age Distribution</h3>
+                            <div class="chart-container">
+                                <canvas id="ageDistChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="chart-card">
+                            <h3 data-i18n="chart_feature_importance">Feature Importance</h3>
+                            <div class="chart-container">
+                                <canvas id="featureImportanceChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 data-i18n="about_title">About This Platform</h2>
+                </div>
+                <div class="about-content">
+                    <div class="about-card">
+                        <p data-i18n="about_desc">This Bank Customer Churn Analysis platform uses a Random Forest machine learning model trained on historical customer data to predict churn probability with high accuracy.</p>
+                        <h3 data-i18n="about_features">Key Features</h3>
+                        <ul class="features-list">
+                            <li>
+                                <span class="feature-icon">🤖</span>
+                                <span data-i18n="about_feature1">Real-time AI churn predictions</span>
+                            </li>
+                            <li>
+                                <span class="feature-icon">🌐</span>
+                                <span data-i18n="about_feature2">Multi-language support (English, Hindi, Telugu)</span>
+                            </li>
+                            <li>
+                                <span class="feature-icon">📊</span>
+                                <span data-i18n="about_feature3">Comprehensive analytics dashboard</span>
+                            </li>
+                            <li>
+                                <span class="feature-icon">📈</span>
+                                <span data-i18n="about_feature4">Feature importance analysis</span>
+                            </li>
+                        </ul>
+                        <div class="model-info">
+                            <h4>Model Details</h4>
+                            <div class="model-details-grid">
+                                <div class="model-detail">
+                                    <span class="detail-label">Algorithm</span>
+                                    <span class="detail-value">Random Forest</span>
+                                </div>
+                                <div class="model-detail">
+                                    <span class="detail-label">Estimators</span>
+                                    <span class="detail-value">200</span>
+                                </div>
+                                <div class="model-detail">
+                                    <span class="detail-label">Max Depth</span>
+                                    <span class="detail-value">15</span>
+                                </div>
+                                <div class="model-detail">
+                                    <span class="detail-label">Training Data</span>
+                                    <span class="detail-value">5000 samples</span>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="team-credit" data-i18n="about_team">Built with ❤️ by the Data Science Team</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p data-i18n="footer_text">© 2024 Bank Customer Churn Analysis. All rights reserved.</p>
+            <div class="footer-links">
+                <span class="current-lang" id="currentLang">English</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="/static/js/i18n.js"></script>
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
