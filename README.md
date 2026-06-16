@@ -169,6 +169,18 @@ This repository uses Spec-Kit to manage feature delivery with spec artifacts.
 - `.specify/templates/feature-spec-template.md` is the canonical template for new feature specs
 - `specs/` holds tracked feature specs such as `specs/BCCA-FEAT-001-prediction-api.md`
 
+## Spec-Driven Development (Spec-Kit)
+
+This repository includes minimal Spec-Kit support. Templates live in `.specify/templates/` and a repository constitution is in `.specify/memory/constitution.md`.
+
+To add a new feature spec, create a folder under `specs/` containing `spec.md`, `plan.md`, and `tasks.md` (templates available). Example: `specs/BCCA-FEAT-002-batch-prediction/`.
+
+To initialize the Spec-Kit tooling you can run:
+
+```powershell
+npx @github/spec-kit init
+```
+
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

@@ -61,3 +61,9 @@ cliff.toml.bak
 .specify/
 specs/
 !specs/BCCA-FEAT-001-prediction-api.md
+
+# Allow tracking Spec-Kit templates and all specs
+!.specify/
+!.specify/**
+!specs/
+!specs/**

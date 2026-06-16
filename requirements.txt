@@ -22,7 +22,7 @@ pyupgrade==3.15.0
 # Security
 bandit==1.7.5
 semgrep==1.65.0
-trufflehog==3.63.0
+trufflehog==2.2.1
 
 # Secret Scanning
 gitleaks==8.18.2
