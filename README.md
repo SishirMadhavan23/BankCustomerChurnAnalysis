@@ -162,6 +162,13 @@ Switch languages using the dropdown in the navigation bar.
 
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
 
+## 🧾 Spec-Driven Development
+
+This repository uses Spec-Kit to manage feature delivery with spec artifacts.
+- `constitution.md` defines project spec rules
+- `.specify/templates/feature-spec-template.md` is the canonical template for new feature specs
+- `specs/` holds tracked feature specs such as `specs/BCCA-FEAT-001-prediction-api.md`
+
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

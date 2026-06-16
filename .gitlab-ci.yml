@@ -22,9 +22,9 @@ stages:
 
 before_script:
   - python -m venv .venv
-  - source .venv/bin/activate
+  - export PATH="$CI_PROJECT_DIR/.venv/bin:$PATH"
   - python -m pip install --upgrade pip
-  - pip install -r requirements.txt
+  - python -m pip install -r requirements.txt
 
 # ============================================
 # Test Stage
