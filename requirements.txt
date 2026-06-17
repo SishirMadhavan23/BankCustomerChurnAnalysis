@@ -1,44 +1,15 @@
-# Core Dependencies
-flask>=3.0.0
-flask-cors>=4.0.0
+# Streamlit App Requirements
+streamlit>=1.28.0
 pandas>=2.2.0
 numpy>=1.26.0
 scikit-learn>=1.3.0
 joblib>=1.3.0
-gunicorn>=21.2.0
 python-dotenv>=1.0.0
+plotly>=5.17.0
 
-# Testing (development only)
-pytest>=7.4.3
-pytest-cov>=4.1.0
+# Development / optional tools (not required for deployment)
+# pytest>=7.4.3
+# ruff>=0.1.8
+# pre-commit>=3.6.0
 
-# Linting & Formatting (development only)
-ruff>=0.1.8
-mypy>=1.7.1
-pylint>=3.0.3
-flake8>=7.0.0
-
-<<<<<<< HEAD
-# Pre-commit (development only)
-pre-commit>=3.6.0
-=======
-# Security
-bandit==1.7.5
-semgrep==1.65.0
-trufflehog==2.2.1
-
-# Secret Scanning
-gitleaks==8.18.2
-
-# Dependency Audit
-pip-audit==2.7.0
-
-# Dead Code Detection
-vulture==2.11
-
-# Automation
-git-cliff==2.2.0
-
-# Pre-commit
-pre-commit==3.6.0
->>>>>>> 1b36e0cc8c73660830febcf3714e856e229bca16
+# Note: Keep runtime.txt to pin Python version to 3.10 for compatibility.

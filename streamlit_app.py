@@ -13,7 +13,10 @@ from pathlib import Path
 # Add app to path
 sys.path.insert(0, str(Path(__file__).parent))
 
-from app.model import generate_sample_data, preprocess_data, train_model, MODEL_DIR
+from app.model import generate_sample_data, preprocess_data, train_model
+
+# Model directory path
+MODEL_DIR = os.path.join(os.path.dirname(__file__), 'model')
 from app.translations import TRANSLATIONS, get_supported_languages
 
 
