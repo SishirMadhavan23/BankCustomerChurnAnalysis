@@ -8,8 +8,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements first for layer caching
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+COPY requirements-deploy.txt .
+RUN pip install --no-cache-dir -r requirements-deploy.txt
 
 # Copy application code
 COPY . .
@@ -21,4 +21,4 @@ RUN python -m app.model
 EXPOSE 5000
 
 # Run application
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app.app:create_app()"]
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--timeout", "120", "--workers", "1", "app.app:app"]

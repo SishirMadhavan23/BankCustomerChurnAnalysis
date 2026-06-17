@@ -1,19 +1,14 @@
 {
   "buildCommand": "pip install -r requirements-deploy.txt && python -m app.model",
-  "outputDirectory": ".",
+  "installCommand": "pip install -r requirements-deploy.txt",
   "env": {
-    "PYTHONUNBUFFERED": "1"
+    "PYTHONUNBUFFERED": "1",
+    "FLASK_ENV": "production"
   },
   "functions": {
     "app/app.py": {
       "memory": 1024,
       "maxDuration": 300
     }
-  },
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/app.app:app"
-    }
-  ]
+  }
 }

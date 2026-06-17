@@ -243,8 +243,19 @@ def create_app():
     return app
 
 
+# Load model at startup
+load_model()
+
+# Export app for WSGI servers (Gunicorn, etc.)
+wsgi_app = app
+
 if __name__ == '__main__':
-    load_model()
-    port = int(os.environ.get('PORT', 5000))
-    debug = os.environ.get('FLASK_DEBUG', '1') == '1'
-    app.run(host='0.0.0.0', port=port, debug=debug)
+    # Only run dev server if not in production
+    if os.environ.get('FLASK_ENV') == 'production':
+        # In production, use: gunicorn --bind 0.0.0.0:$PORT app.app:app
+        pass
+    else:
+        port = int(os.environ.get('PORT', 5000))
+        debug = os.environ.get('FLASK_DEBUG', '1') == '1'
+        # Use use_reloader=False to avoid signal handler issues in containers
+        app.run(host='0.0.0.0', port=port, debug=debug, use_reloader=False)
