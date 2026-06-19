@@ -218,6 +218,20 @@
                     <span data-i18n="loading">Loading...</span>
                 </div>
                 <div class="dashboard-content" id="dashboardContent" style="display:none;">
+                    <!-- Dataset Upload Card -->
+                    <div class="dataset-upload-card">
+                        <div class="upload-area" id="uploadArea">
+                            <span class="upload-icon">📂</span>
+                            <h3>Upload Your Dataset</h3>
+                            <p>Drag & drop a CSV file here, or click to browse</p>
+                            <p style="font-size:0.8rem;margin-top:8px;color:var(--text-muted);">
+                                Required columns: CreditScore, Geography, Gender, Age, Tenure, Balance, NumOfProducts, HasCrCard, IsActiveMember, EstimatedSalary
+                            </p>
+                            <input type="file" id="datasetFile" accept=".csv" onchange="uploadDataset(this.files)">
+                        </div>
+                        <div class="upload-status" id="uploadStatus" style="display:none;"></div>
+                    </div>
+
                     <!-- KPI Cards -->
                     <div class="kpi-grid">
                         <div class="kpi-card kpi-primary">

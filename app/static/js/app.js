@@ -380,6 +380,77 @@ function renderAgeDistChart(data) {
     });
 }
 
+// ===== Dataset Upload =====
+async function uploadDataset(files) {
+    if (!files || files.length === 0) return;
+    
+    const file = files[0];
+    const statusEl = document.getElementById('uploadStatus');
+    const uploadArea = document.getElementById('uploadArea');
+    
+    // Show loading
+    statusEl.style.display = 'block';
+    statusEl.className = 'upload-status loading';
+    statusEl.textContent = `Uploading and processing ${file.name}...`;
+    
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    try {
+        const response = await fetch('/api/upload-dataset', {
+            method: 'POST',
+            body: formData
+        });
+        const result = await response.json();
+        
+        if (result.success) {
+            statusEl.className = 'upload-status success';
+            statusEl.textContent = result.message || `✅ ${result.total} customers processed! ${result.churned} at risk of churn.`;
+            
+            // Reload dashboard with new data
+            loadDashboard();
+            
+            // Reset file input
+            document.getElementById('datasetFile').value = '';
+        } else {
+            statusEl.className = 'upload-status error';
+            statusEl.textContent = '❌ ' + (result.error || 'Upload failed');
+        }
+    } catch (error) {
+        statusEl.className = 'upload-status error';
+        statusEl.textContent = '❌ Failed to upload file. Is the server running?';
+        console.error('Upload error:', error);
+    }
+}
+
+// Drag and drop support
+document.addEventListener('DOMContentLoaded', function() {
+    const uploadArea = document.getElementById('uploadArea');
+    if (uploadArea) {
+        ['dragenter', 'dragover'].forEach(event => {
+            uploadArea.addEventListener(event, function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                this.classList.add('dragover');
+            });
+        });
+        ['dragleave', 'drop'].forEach(event => {
+            uploadArea.addEventListener(event, function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                this.classList.remove('dragover');
+            });
+        });
+        uploadArea.addEventListener('drop', function(e) {
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                document.getElementById('datasetFile').files = files;
+                uploadDataset(files);
+            }
+        });
+    }
+});
+
 // ===== Customer Search =====
 let searchDebounceTimer = null;
 

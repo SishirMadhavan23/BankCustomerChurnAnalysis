@@ -327,6 +327,104 @@ def customers_search():
     })
 
 
+@app.route('/api/upload-dataset', methods=['POST'])
+def upload_dataset():
+    """Upload a CSV dataset and run batch predictions on it."""
+    global _customer_df, _dash_data
+
+    if 'file' not in request.files:
+        return jsonify({'success': False, 'error': 'No file provided'}), 400
+
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({'success': False, 'error': 'No file selected'}), 400
+
+    if not file.filename.endswith('.csv'):
+        return jsonify({'success': False, 'error': 'Only CSV files are supported'}), 400
+
+    try:
+        df = pd.read_csv(file)
+
+        # Validate required columns
+        required_cols = ['CreditScore', 'Geography', 'Gender', 'Age', 'Tenure',
+                         'Balance', 'NumOfProducts', 'HasCrCard', 'IsActiveMember', 'EstimatedSalary']
+        missing = [c for c in required_cols if c not in df.columns]
+        if missing:
+            return jsonify({
+                'success': False,
+                'error': f'Missing required columns: {", ".join(missing)}. Required: {", ".join(required_cols)}'
+            }), 400
+
+        # Add CustomerName if not present
+        if 'CustomerName' not in df.columns:
+            from app.model import generate_customer_names
+            df['CustomerName'] = generate_customer_names(len(df))
+
+        # Compute churn predictions for all rows
+        if _model is None and not load_model():
+            return jsonify({'error': 'Model not trained. Please run train.py first.'}), 503
+
+        predictions = []
+        for _, row in df.iterrows():
+            try:
+                geo_encoded = _label_geo.transform([row['Geography']])[0]
+                gender_encoded = _label_gender.transform([row['Gender']])[0]
+
+                features = np.array([[
+                    float(row['CreditScore']), geo_encoded, gender_encoded,
+                    float(row['Age']), float(row['Tenure']), float(row['Balance']),
+                    float(row['NumOfProducts']), float(row['HasCrCard']),
+                    float(row['IsActiveMember']), float(row['EstimatedSalary'])
+                ]])
+                features_scaled = _scaler.transform(features)
+                prob = float(_model.predict_proba(features_scaled)[0][1])
+                pred = int(_model.predict(features_scaled)[0])
+                predictions.append({
+                    'name': row.get('CustomerName', f'Customer {_}'),
+                    'credit_score': int(row['CreditScore']),
+                    'geography': row['Geography'],
+                    'gender': row['Gender'],
+                    'age': int(row['Age']),
+                    'tenure': int(row['Tenure']),
+                    'balance': float(row['Balance']),
+                    'num_products': int(row['NumOfProducts']),
+                    'has_cr_card': int(row['HasCrCard']),
+                    'is_active_member': int(row['IsActiveMember']),
+                    'estimated_salary': float(row['EstimatedSalary']),
+                    'exited': pred,
+                    'probability': round(prob * 100, 2),
+                    'risk_level': 'high' if pred == 1 else 'low',
+                })
+            except Exception as e:
+                predictions.append({
+                    'name': row.get('CustomerName', f'Customer {_}'),
+                    'error': str(e)
+                })
+
+        # Replace the cached customer dataframe with uploaded data
+        df['Exited'] = [p.get('exited', 0) for p in predictions]
+        _customer_df = df
+
+        # Reset dashboard cache so it regenerates from new data
+        _dash_data = None
+
+        churned_count = sum(1 for p in predictions if p.get('exited') == 1)
+        retained_count = sum(1 for p in predictions if p.get('exited') == 0)
+
+        return jsonify({
+            'success': True,
+            'total': len(predictions),
+            'churned': churned_count,
+            'retained': retained_count,
+            'predictions': predictions,
+            'message': f'Dataset loaded! {len(predictions)} customers processed. '
+                       f'{churned_count} at risk of churn ({round(churned_count/len(predictions)*100, 1)}%).'
+        })
+
+    except Exception as e:
+        return jsonify({'success': False, 'error': f'Failed to process file: {str(e)}'}), 500
+
+
 @app.route('/api/ai/health')
 def ai_health():
     """Check if Ollama AI backend is available."""
