@@ -14,6 +14,7 @@ from flask import Flask, render_template, request, jsonify, session, send_from_d
 
 from app.translations import get_text, get_supported_languages
 from app.model import generate_sample_data, preprocess_data
+from app.ollama_model import explain_prediction, analyze_dashboard_insights, is_ollama_available
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'bcca-secret-key-change-in-production')
@@ -140,7 +141,8 @@ def predict():
 
         lang = request.args.get('lang', session.get('lang', 'en'))
 
-        return jsonify({
+        # Build response
+        response_data = {
             'success': True,
             'prediction': prediction,
             'probability': round(probability * 100, 2),
@@ -149,7 +151,26 @@ def predict():
             'message_high': get_text(lang, 'predict_risk_high'),
             'message_low': get_text(lang, 'predict_risk_low'),
             'probability_label': get_text(lang, 'predict_probability'),
-        })
+        }
+
+        # If Ollama is available, add AI explanation
+        if is_ollama_available():
+            customer_data = {
+                'credit_score': data['credit_score'],
+                'geography': data['geography'],
+                'gender': data['gender'],
+                'age': data['age'],
+                'tenure': data['tenure'],
+                'balance': data['balance'],
+                'num_products': data['num_products'],
+                'has_cr_card': data['has_cr_card'],
+                'is_active_member': data['is_active_member'],
+                'estimated_salary': data['estimated_salary'],
+            }
+            ai_insights = explain_prediction(customer_data, prediction, probability, lang)
+            response_data['ai'] = ai_insights
+
+        return jsonify(response_data)
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -209,6 +230,37 @@ def get_translations():
     if lang in TRANSLATIONS:
         return jsonify({'success': True, 'data': TRANSLATIONS[lang]})
     return jsonify({'success': True, 'data': TRANSLATIONS['en']})
+
+
+@app.route('/api/ai/health')
+def ai_health():
+    """Check if Ollama AI backend is available."""
+    return jsonify({
+        'success': True,
+        'ollama_available': is_ollama_available(),
+        'ollama_host': os.environ.get('OLLAMA_HOST', 'http://localhost:11434'),
+        'ollama_model': os.environ.get('OLLAMA_MODEL', 'llama3.2:1b'),
+    })
+
+
+@app.route('/api/ai/dashboard-insights')
+def ai_dashboard_insights():
+    """AI-generated insights from dashboard data."""
+    if not is_ollama_available():
+        return jsonify({
+            'success': False,
+            'error': 'Ollama AI backend is not available. Start Ollama and pull a model.',
+            'setup_instructions': 'Install Ollama from https://ollama.com, then run: ollama pull llama3.2:1b'
+        }), 503
+
+    lang = request.args.get('lang', session.get('lang', 'en'))
+    data = get_dashboard_data()
+    insights = analyze_dashboard_insights(data, lang)
+    return jsonify({
+        'success': True,
+        'insights': insights,
+        'ollama_model': os.environ.get('OLLAMA_MODEL', 'llama3.2:1b')
+    })
 
 
 @app.route('/api/languages')

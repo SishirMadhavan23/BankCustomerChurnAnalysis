@@ -177,6 +177,28 @@
                             <div class="result-confidence">
                                 <span data-i18n="predict_confidence">Confidence</span>: <span id="confidenceValue">--</span>
                             </div>
+
+                            <!-- AI Insights Section (shown when Ollama is available) -->
+                            <div class="ai-insights" id="aiInsights" style="display:none;">
+                                <div class="ai-insights-header">
+                                    <span class="ai-icon">🤖</span>
+                                    <span>AI-Powered Analysis</span>
+                                    <span class="ai-model-badge" id="aiModelBadge"></span>
+                                </div>
+                                <div class="ai-insight-card">
+                                    <div class="ai-insight-label">📋 Explanation</div>
+                                    <p class="ai-insight-text" id="aiExplanation">--</p>
+                                </div>
+                                <div class="ai-insight-card">
+                                    <div class="ai-insight-label">💡 Recommendation</div>
+                                    <p class="ai-insight-text" id="aiRecommendation">--</p>
+                                </div>
+                                <div class="ai-insight-card">
+                                    <div class="ai-insight-label">⚠️ Key Risk Factors</div>
+                                    <p class="ai-insight-text" id="aiRiskFactors">--</p>
+                                </div>
+                            </div>
+
                             <button class="btn btn-outline btn-full" onclick="resetPrediction()" data-i18n="predict_again">Predict Again</button>
                         </div>
                     </div>

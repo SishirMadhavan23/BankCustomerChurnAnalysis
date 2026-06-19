@@ -127,6 +127,11 @@ async function submitPrediction(event) {
             const riskBadge = document.getElementById('riskBadge');
             const resultMessage = document.getElementById('resultMessage');
             const confidenceValue = document.getElementById('confidenceValue');
+            const aiSection = document.getElementById('aiInsights');
+            const aiExplanation = document.getElementById('aiExplanation');
+            const aiRecommendation = document.getElementById('aiRecommendation');
+            const aiRiskFactors = document.getElementById('aiRiskFactors');
+            const aiModelBadge = document.getElementById('aiModelBadge');
             
             // Animate gauge
             const probability = result.probability;
@@ -150,6 +155,19 @@ async function submitPrediction(event) {
             }
             
             confidenceValue.textContent = result.confidence.toFixed(1) + '%';
+            
+            // Display AI insights if available
+            if (result.ai && result.ai.ai_available) {
+                aiSection.style.display = 'block';
+                aiExplanation.textContent = result.ai.explanation || '';
+                aiRecommendation.textContent = result.ai.recommendation || '';
+                aiRiskFactors.innerHTML = result.ai.risk_factors 
+                    ? result.ai.risk_factors.replace(/\n/g, '<br>')
+                    : '';
+                aiModelBadge.textContent = '🤖 ' + (result.ai.model_used || 'Ollama AI');
+            } else {
+                aiSection.style.display = 'none';
+            }
         } else {
             alert('Error: ' + (result.error || 'Prediction failed'));
         }

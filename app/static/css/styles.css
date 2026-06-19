@@ -465,6 +465,69 @@ h4 { font-size: 1.125rem; font-weight: 600; }
     font-size: 0.9rem;
 }
 
+/* ===== AI Insights ===== */
+.ai-insights {
+    margin-top: 20px;
+    padding: 16px;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(139, 92, 246, 0.08));
+    border: 1px solid var(--primary);
+    border-radius: var(--radius);
+    text-align: left;
+}
+
+.ai-insights-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+    font-weight: 600;
+    color: var(--primary-light);
+    font-size: 0.95rem;
+    flex-wrap: wrap;
+}
+
+.ai-icon {
+    font-size: 1.3rem;
+}
+
+.ai-model-badge {
+    margin-left: auto;
+    font-size: 0.7rem;
+    padding: 3px 10px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text-muted);
+    font-weight: 400;
+}
+
+.ai-insight-card {
+    background: var(--bg);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    margin-bottom: 10px;
+}
+
+.ai-insight-card:last-child {
+    margin-bottom: 0;
+}
+
+.ai-insight-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+}
+
+.ai-insight-text {
+    font-size: 0.85rem;
+    color: var(--text);
+    line-height: 1.6;
+    white-space: pre-wrap;
+}
+
 /* ===== Dashboard ===== */
 .dashboard-loading {
     text-align: center;
