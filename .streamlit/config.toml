@@ -14,8 +14,8 @@ runOnSave = true
 maxUploadSize = 200
 
 [theme]
-primaryColor = "#FF6B6B"
-backgroundColor = "#FFFFFF"
-secondaryBackgroundColor = "#F0F2F6"
-textColor = "#262730"
+primaryColor = "#0077b6"
+backgroundColor = "#12121a"
+secondaryBackgroundColor = "#1a1a2e"
+textColor = "#f1f5f9"
 font = "sans serif"
