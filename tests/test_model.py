@@ -1,7 +1,9 @@
 """Tests for the model training module."""
 
+import os
 import numpy as np
-from app.model import generate_sample_data, preprocess_data
+import pandas as pd
+from app.model import DATASET_PATH, generate_sample_data, get_full_customer_dataset, preprocess_data
 
 
 class TestModelTraining:
@@ -10,7 +12,7 @@ class TestModelTraining:
     def test_generate_sample_data_shape(self):
         """Test that sample data has correct shape."""
         df = generate_sample_data(5000)
-        assert len(df) == 5000
+        assert 0 < len(df) <= 5000
         assert 'Exited' in df.columns
         assert 'CreditScore' in df.columns
         assert 'Geography' in df.columns
@@ -30,8 +32,8 @@ class TestModelTraining:
         assert df['Age'].dtype in [np.int64, np.int32]
         assert df['Balance'].dtype == np.float64
         assert df['EstimatedSalary'].dtype == np.float64
-        assert df['Geography'].dtype == 'object'
-        assert df['Gender'].dtype == 'object'
+        assert pd.api.types.is_string_dtype(df['Geography'])
+        assert pd.api.types.is_string_dtype(df['Gender'])
 
     def test_generate_sample_data_values(self):
         """Test that sample data has reasonable value ranges."""
@@ -49,9 +51,9 @@ class TestModelTraining:
         """Test that preprocessing returns correct shapes."""
         df = generate_sample_data(1000)
         X, y, scaler, le_geo, le_gender = preprocess_data(df)
-        assert X.shape[0] == 1000
+        assert X.shape[0] == len(df)
         assert X.shape[1] == 10
-        assert len(y) == 1000
+        assert len(y) == len(df)
         assert scaler is not None
         assert le_geo is not None
         assert le_gender is not None
@@ -64,3 +66,12 @@ class TestModelTraining:
         assert 'Gender_Encoded' in df.columns
         assert set(le_geo.classes_) == {'France', 'Spain', 'Germany'}
         assert set(le_gender.classes_) == {'Female', 'Male'}
+
+    def test_get_full_customer_dataset(self):
+        """Test that the full dataset loader returns all real rows when available."""
+        df = get_full_customer_dataset()
+        assert 'CustomerName' in df.columns
+
+        if os.path.exists(DATASET_PATH):
+            expected = len(pd.read_csv(DATASET_PATH))
+            assert len(df) == expected

@@ -14,7 +14,13 @@ from io import StringIO
 # Add app to path
 sys.path.insert(0, str(Path(__file__).parent))
 
-from app.model import generate_sample_data, preprocess_data, train_model, DATASET_PATH, generate_customer_names
+from app.model import (
+    DATASET_PATH,
+    generate_customer_names,
+    get_full_customer_dataset,
+    preprocess_data,
+    train_model,
+)
 
 # Model directory path
 MODEL_DIR = os.path.join(os.path.dirname(__file__), 'model')
@@ -248,10 +254,8 @@ def load_model_artifacts():
         return None, None, None, None
 
 
-@st.cache_data
-def get_dashboard_data():
-    """Generate dashboard analytics data using the real dataset if available."""
-    df = generate_sample_data(5000)
+def build_dashboard_data(df: pd.DataFrame):
+    """Generate dashboard analytics data from the active dataset."""
     churned = df[df['Exited'] == 1]
     retained = df[df['Exited'] == 0]
 
@@ -369,9 +373,43 @@ def get_customer_dataframe(n_samples=5000):
     """Get the customer dataframe, using session state cache if available."""
     if st.session_state.customer_df is not None:
         return st.session_state.customer_df
-    df = generate_sample_data(n_samples)
+    df = get_full_customer_dataset(default_synthetic_samples=n_samples)
     st.session_state.customer_df = df
     return df
+
+
+def get_dataset_source_label():
+    """Return the display label for the active dataset."""
+    if st.session_state.uploaded_filename:
+        return st.session_state.uploaded_filename
+    if os.path.exists(DATASET_PATH):
+        return 'Churn_Modelling.csv'
+    return 'Synthetic'
+
+
+def format_customer_details(customer: pd.Series) -> pd.DataFrame:
+    """Format a single customer record for detail display."""
+    details = [
+        ('Name', customer.get('CustomerName', 'N/A')),
+        ('Customer ID', customer.get('CustomerId', 'N/A')),
+        ('Surname', customer.get('Surname', 'N/A')),
+        ('Age', customer.get('Age', 'N/A')),
+        ('Gender', customer.get('Gender', 'N/A')),
+        ('Geography', customer.get('Geography', 'N/A')),
+        ('Credit Score', customer.get('CreditScore', 'N/A')),
+        ('Tenure', customer.get('Tenure', 'N/A')),
+        ('Balance', f"${float(customer.get('Balance', 0)):,.2f}"),
+        ('Products', customer.get('NumOfProducts', 'N/A')),
+        ('Credit Card', 'Yes' if int(customer.get('HasCrCard', 0)) == 1 else 'No'),
+        ('Active Member', 'Yes' if int(customer.get('IsActiveMember', 0)) == 1 else 'No'),
+        ('Estimated Salary', f"${float(customer.get('EstimatedSalary', 0)):,.2f}"),
+        ('Status', 'Churned' if int(customer.get('Exited', 0)) == 1 else 'Retained'),
+    ]
+
+    if 'ChurnProbability' in customer.index and pd.notna(customer.get('ChurnProbability')):
+        details.append(('Churn Probability', customer.get('ChurnProbability')))
+
+    return pd.DataFrame(details, columns=['Field', 'Value'])
 
 
 # ============================================================================
@@ -423,11 +461,11 @@ def show_dashboard():
     st.title(f"📊 {get_text(lang, 'dashboard_title')}")
 
     # Load data
-    data = get_dashboard_data()
-    df = data['df']
+    df = get_customer_dataframe()
+    data = build_dashboard_data(df)
 
     # Show dataset source info
-    source = data.get('dataset_source', 'Synthetic')
+    source = get_dataset_source_label()
     st.info(f"📂 Dataset: **{source}** | {len(df)} customers loaded")
 
     # Dataset upload section
@@ -460,11 +498,11 @@ def show_dashboard():
                             for _, row in upload_df.iterrows():
                                 try:
                                     pred, prob = predict_customer(model, scaler, label_geo, label_gender, row)
-                                    predictions.append(pred)
+                                    predictions.append({'exited': pred, 'probability': prob})
                                 except Exception:
-                                    predictions.append(0)
-                            upload_df['Exited'] = predictions
-                            upload_df['ChurnProbability'] = [f"{prob:.1f}%" for prob in upload_df.get('Exited', [0])]
+                                    predictions.append({'exited': 0, 'probability': 0.0})
+                            upload_df['Exited'] = [p['exited'] for p in predictions]
+                            upload_df['ChurnProbability'] = [f"{p['probability'] * 100:.1f}%" for p in predictions]
 
                         st.session_state.customer_df = upload_df
                         st.session_state.uploaded_filename = uploaded_file.name
@@ -762,7 +800,7 @@ def show_customers():
     lang = st.session_state.get('lang', 'en')
 
     st.title("👥 Customer Directory")
-    st.markdown("Search for a customer by name or filter by geography and churn status.")
+    st.markdown("Search for a customer by name, inspect full customer details, or browse the complete dataset.")
 
     # Load customer data
     df = get_customer_dataframe()
@@ -846,20 +884,61 @@ def show_customers():
     st.markdown(f"**{len(filtered)} customers found**")
 
     if len(filtered) > 0:
+        st.markdown("### Customer Lookup")
+
+        lookup_df = filtered.reset_index(drop=True).copy()
+        lookup_df['LookupLabel'] = lookup_df.apply(
+            lambda row: (
+                f"{row['CustomerName']} (ID: {row['CustomerId']})"
+                if 'CustomerId' in lookup_df.columns and pd.notna(row.get('CustomerId'))
+                else f"{row['CustomerName']} (Row {row.name + 1})"
+            ),
+            axis=1
+        )
+        name_options = lookup_df['LookupLabel'].tolist()
+        selected_name = st.selectbox(
+            "Select a customer",
+            options=name_options,
+            help="Choose a customer from the current results to view full details."
+        )
+        selected_customer = lookup_df.loc[lookup_df['LookupLabel'] == selected_name].iloc[0]
+
+        detail_col1, detail_col2, detail_col3 = st.columns(3)
+        with detail_col1:
+            st.metric("Customer", str(selected_customer.get('CustomerName', 'N/A')))
+        with detail_col2:
+            st.metric("Status", "Churned" if int(selected_customer.get('Exited', 0)) == 1 else "Retained")
+        with detail_col3:
+            if 'ChurnProbability' in selected_customer.index and pd.notna(selected_customer.get('ChurnProbability')):
+                st.metric("Churn Probability", str(selected_customer.get('ChurnProbability')))
+            else:
+                st.metric("Geography", str(selected_customer.get('Geography', 'N/A')))
+
+        st.dataframe(
+            format_customer_details(selected_customer),
+            use_container_width=True,
+            hide_index=True
+        )
+
+        st.markdown("### All Customers")
         # Prepare display dataframe
-        display_df = filtered[['CustomerName', 'Age', 'Geography', 'CreditScore', 'Balance',
-                                'NumOfProducts', 'IsActiveMember', 'Tenure', 'Exited']].copy()
+        display_columns = ['CustomerName', 'Age', 'Geography', 'CreditScore', 'Balance',
+                           'NumOfProducts', 'IsActiveMember', 'Tenure', 'Exited']
+        if 'CustomerId' in filtered.columns:
+            display_columns.insert(1, 'CustomerId')
+        display_df = filtered[display_columns].copy()
         display_df['Balance'] = display_df['Balance'].apply(lambda x: f"${x:,.2f}")
         display_df['Status'] = display_df['Exited'].apply(lambda x: "🔴 Churned" if x == 1 else "🟢 Retained")
         display_df['Active'] = display_df['IsActiveMember'].apply(lambda x: "✅ Yes" if x == 1 else "❌ No")
         display_df = display_df.rename(columns={
             'CustomerName': 'Name',
+            'CustomerId': 'Customer ID',
             'CreditScore': 'Credit Score',
             'NumOfProducts': 'Products',
         })
         display_df = display_df.drop(columns=['Exited', 'IsActiveMember'])
 
-        st.dataframe(display_df, use_container_width=True, height=min(600, 40 * len(display_df) + 40))
+        st.dataframe(display_df, use_container_width=True, height=700)
     else:
         st.info("No customers match your search criteria.")
 

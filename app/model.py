@@ -1,6 +1,7 @@
 """Bank Customer Churn Prediction Model - Training Script"""
 
 import os
+from typing import Optional
 import joblib
 import numpy as np
 import pandas as pd
@@ -27,6 +28,18 @@ def load_real_dataset():
             df['CustomerName'] = generate_customer_names(len(df))
         return df
     return None
+
+
+def get_full_customer_dataset(default_synthetic_samples: int = 5000) -> pd.DataFrame:
+    """Return the full available customer dataset.
+
+    If the real dataset exists, all rows are returned. Otherwise a synthetic
+    dataset is generated with the requested fallback size.
+    """
+    real_df = load_real_dataset()
+    if real_df is not None:
+        return real_df.copy()
+    return generate_sample_data(default_synthetic_samples)
 
 
 def generate_customer_names(n_samples=5000, seed=99):
@@ -60,12 +73,14 @@ def generate_customer_names(n_samples=5000, seed=99):
     return names
 
 
-def generate_sample_data(n_samples=5000):
+def generate_sample_data(n_samples: Optional[int] = 5000):
     """Generate a realistic synthetic bank customer churn dataset.
     Falls back to synthetic generation if the real CSV is not available.
     """
     # Try to load the real dataset first
     real_df = load_real_dataset()
+    if real_df is not None and n_samples is None:
+        return real_df.copy()
     if real_df is not None and len(real_df) >= n_samples:
         # Return the requested number of samples from the real dataset
         return real_df.head(n_samples).copy()
