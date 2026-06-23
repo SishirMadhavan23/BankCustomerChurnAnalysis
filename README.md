@@ -287,6 +287,73 @@ STREAMLIT_SERVER_HEADLESS=true
 
 Configuration available in `deployment/ci.yml`.
 
+## GitLab Runner
+
+This project includes automated runner setup for CI/CD execution.
+
+### Setup Script
+
+A ready-to-use setup script is provided at:
+- `deployment/setup-gitlab-runner.sh`
+
+This script automates runner registration and startup.
+
+### Requirements
+
+- GitLab Personal Access Token with `api` scope
+- Runner can use `shell` or `docker` executor
+- Supports Linux (apt/dnf/zypper/pacman), macOS (Homebrew)
+- Windows users should run under WSL or Git Bash
+
+### Configuration
+
+Environment variables:
+- `GITLAB_PAT` - Personal Access Token with api scope
+- `GITLAB_HOST` - GitLab instance host (default: https://gitlab.com)
+- `RUNNER_EXECUTOR` - `shell` or `docker`
+- `RUNNER_DOCKER_IMAGE` - Docker image for docker executor
+- `RUNNER_TAG_LIST` - Comma-separated runner tags
+
+### Quick Start
+
+```bash
+# Set required PAT
+export GITLAB_PAT="your-pat-here"
+
+# Run setup script
+bash deployment/setup-gitlab-runner.sh
+
+# Or with explicit options
+bash deployment/setup-gitlab-runner.sh \
+  --executor docker \
+  --image docker:stable \
+  --tags "linux,x64,docker"
+```
+
+### Runner Management
+
+```bash
+# Check runner status
+gitlab-runner list
+
+# Restart runner service
+sudo systemctl restart gitlab-runner  # systemd
+brew services restart gitlab-runner  # macOS
+
+# Stop background runner
+kill $(cat ~/.gitlab-runner/runner.pid)
+
+# View logs
+tail -f ~/.gitlab-runner/runner.log
+```
+
+### Runner Configuration
+
+After registration, the runner config is saved to:
+- `~/.gitlab-runner/config.toml`
+
+To modify executor or tags, edit this file and restart the runner.
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and guidelines.
