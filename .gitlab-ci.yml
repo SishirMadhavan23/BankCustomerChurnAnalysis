@@ -1,5 +1,7 @@
 stages:
   - lint
+  - format
+  - type_check
   - test
   - security
   - build
@@ -26,11 +28,25 @@ lint:
   stage: lint
   script:
     - ruff check app/ tests/
-    - ruff format --check app/
     - pylint app/ --fail-under=7.0 || true
     - flake8 app/ --max-line-length=100 --count
     - pyupgrade --py38-plus $(find app/ -name "*.py") || true
     - vulture app/ --min-confidence 80 || true
+  allow_failure: true
+
+# Format Stage
+format:
+  stage: format
+  script:
+    - ruff format --check app/
+  allow_failure: true
+
+# Type Check Stage
+type_check:
+  stage: type_check
+  script:
+    - pip install mypy
+    - mypy app/
   allow_failure: true
 
 # Test Stage
