@@ -21,7 +21,6 @@ default:
     - linux
     - x64
   before_script:
-    - apt-get update && apt-get install -y --no-install-recommends curl build-essential
     - python -m pip install --upgrade pip
     - pip install -r requirements.txt
     - pip install \
