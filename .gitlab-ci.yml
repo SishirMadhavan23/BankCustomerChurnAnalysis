@@ -76,7 +76,7 @@ secret_scanning:
   stage: security
   image: zricethezav/gitleaks:latest
   script:
-    - gitleaks detect --source . --report-path gitleaks-report.json --report-format json
+    - /gitleaks detect --source . --report-path gitleaks-report.json --report-format json
   allow_failure: false
 
 dependency_audit:
