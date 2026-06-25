@@ -60,6 +60,7 @@ ignore = [
     "PTH118",
     "PTH120",
     "PLR2004",
+    "PD901",
 ]
 
 [tool.ruff.format]
