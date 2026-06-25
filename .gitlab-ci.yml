@@ -75,7 +75,7 @@ security:
 secret_scanning:
   stage: security
   image: zricethezav/gitleaks:latest
-  before_script: []
+  entrypoint: ["/bin/sh", "-c"]
   script:
     - gitleaks detect --source . --report-path gitleaks-report.json --report-format json
   allow_failure: true
