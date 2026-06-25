@@ -45,7 +45,24 @@ target-version = "py310"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "N", "W", "D", "UP", "B", "A", "C4", "SIM", "ARG", "PTH", "PD", "PL", "TRY", "RUF"]
-ignore = ["D203", "D213", "D400", "D407", "D413", "D415", "D205", "E501", "N806", "PTH103", "PTH110", "PTH118", "PTH120", "PLR2004"]
+ignore = [
+    "D203",
+    "D213",
+    "D400",
+    "D407",
+    "D413",
+    "D415",
+    "D205",
+    "E501",
+    "N806",
+    "PTH103",
+    "PTH110",
+    "PTH118",
+    "PTH120",
+    "PLR2004",
+    "RUF059",
+    "PD901",
+]
 
 [tool.ruff.format]
 quote-style = "single"
