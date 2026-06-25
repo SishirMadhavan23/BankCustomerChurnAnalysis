@@ -69,14 +69,15 @@ security:
   stage: security
   script:
     - bandit -r app/ -x tests
-    - semgrep --config=auto app/ --metrics=off
+    - semgrep scan --config=auto app/
   allow_failure: false
 
 secret_scanning:
   stage: security
   image: zricethezav/gitleaks:latest
+  entrypoint: [""]
   script:
-    - /gitleaks detect --source . --report-path gitleaks-report.json --report-format json
+    - gitleaks detect --source . --report-path gitleaks-report.json --report-format json
   allow_failure: false
 
 dependency_audit:
