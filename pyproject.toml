@@ -124,11 +124,14 @@ output-format = "colorized"
 [tool.pylint.basic]
 good-names = [
     "i", "j", "k", "x", "y", "z", "X", "y", "_", "df", "id", "ex", "db",
+    "X_train", "X_test", "y_train", "y_test",
 ]
-DESIGN.max-args = 10
-DESIGN.max-locals = 20
-DESIGN.max-attributes = 10
-DESIGN.max-statements = 100
+
+[tool.pylint.design]
+max-args = 10
+max-locals = 20
+max-attributes = 10
+max-statements = 100
 
 [tool.flake8]
 max-line-length = 100

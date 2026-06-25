@@ -10,7 +10,10 @@ TRANSLATIONS = {
         'nav_analytics': 'Analytics',
         'nav_about': 'About',
         'hero_title': 'Predict Customer Churn with AI',
-        'hero_desc': 'Leverage machine learning to identify at-risk customers and take proactive retention actions.',
+        'hero_desc': (
+            'Leverage machine learning to identify at-risk customers '
+            'and take proactive retention actions.'
+        ),
         'cta_start': 'Predict Now',
         'cta_learn': 'Learn More',
         'predict_title': 'Customer Churn Prediction',
@@ -45,7 +48,11 @@ TRANSLATIONS = {
         'chart_age_dist': 'Age Distribution',
         'chart_feature_importance': 'Feature Importance',
         'about_title': 'About This Platform',
-        'about_desc': 'This Bank Customer Churn Analysis platform uses a Random Forest machine learning model trained on historical customer data to predict churn probability with high accuracy.',
+        'about_desc': (
+            'This Bank Customer Churn Analysis platform uses a Random Forest '
+            'machine learning model trained on historical customer data to predict '
+            'churn probability with high accuracy.'
+        ),
         'about_features': 'Key Features',
         'about_feature1': 'Real-time AI churn predictions',
         'about_feature2': 'Multi-language support (English, Hindi, Telugu)',
@@ -68,7 +75,10 @@ TRANSLATIONS = {
         'nav_analytics': 'विश्लेषण',
         'nav_about': 'हमारे बारे में',
         'hero_title': 'एआई से ग्राहक विश्लेषण का पूर्वानुमान लगाएं',
-        'hero_desc': 'जोखिम वाले ग्राहकों की पहचान करने और सक्रिय प्रतिधारण कार्रवाई करने के लिए मशीन लर्निंग का लाभ उठाएं।',
+        'hero_desc': (
+            'जोखिम वाले ग्राहकों की पहचान करने और सक्रिय प्रतिधारण '
+            'कार्रवाई करने के लिए मशीन लर्निंग का लाभ उठाएं।'
+        ),
         'cta_start': 'अभी भविष्यवाणी करें',
         'cta_learn': 'और जानें',
         'predict_title': 'ग्राहक विश्लेषण पूर्वानुमान',
@@ -103,7 +113,11 @@ TRANSLATIONS = {
         'chart_age_dist': 'आयु वितरण',
         'chart_feature_importance': 'विशेषता महत्व',
         'about_title': 'इस प्लेटफॉर्म के बारे में',
-        'about_desc': 'यह बैंक ग्राहक विश्लेषण प्लेटफॉर्म उच्च सटीकता के साथ विश्लेषण संभावना का पूर्वानुमान लगाने के लिए ऐतिहासिक ग्राहक डेटा पर प्रशिक्षित रैंडम फॉरेस्ट मशीन लर्निंग मॉडल का उपयोग करता है।',
+        'about_desc': (
+            'यह बैंक ग्राहक विश्लेषण प्लेटफॉर्म उच्च सटीकता के साथ '
+            'विश्लेषण संभावना का पूर्वानुमान लगाने के लिए ऐतिहासिक ग्राहक डेटा पर '
+            'प्रशिक्षित रैंडम फॉरेस्ट मशीन लर्निंग मॉडल का उपयोग करता है।'
+        ),
         'about_features': 'प्रमुख विशेषताएं',
         'about_feature1': 'रीयल-टाइम एआई विश्लेषण पूर्वानुमान',
         'about_feature2': 'बहु-भाषा समर्थन (अंग्रेजी, हिंदी, तेलुगु)',
@@ -126,7 +140,10 @@ TRANSLATIONS = {
         'nav_analytics': 'ఎనలిటిక్స్',
         'nav_about': 'గురించి',
         'hero_title': 'AIతో కస్టమర్ ఛర్న్‌ను అంచనా వేయండి',
-        'hero_desc': 'ప్రమాదంలో ఉన్న కస్టమర్లను గుర్తించడానికి మరియు చురుకైన నిలుపుదల చర్యలు తీసుకోవడానికి మెషిన్ లెర్నింగ్‌ను ఉపయోగించండి.',
+        'hero_desc': (
+            'ప్రమాదంలో ఉన్న కస్టమర్లను గుర్తించడానికి మరియు చురుకైన '
+            'నిలుపుదల చర్యలు తీసుకోవడానికి మెషిన్ లెర్నింగ్‌ను ఉపయోగించండి.'
+        ),
         'cta_start': 'ఇప్పుడు అంచనా వేయండి',
         'cta_learn': 'మరింత తెలుసుకోండి',
         'predict_title': 'కస్టమర్ ఛర్న్ ప్రిడిక్షన్',
@@ -161,7 +178,11 @@ TRANSLATIONS = {
         'chart_age_dist': 'వయస్సు పంపిణీ',
         'chart_feature_importance': 'ఫీచర్ ప్రాముఖ్యత',
         'about_title': 'ఈ ప్లాట్‌ఫాం గురించి',
-        'about_desc': 'ఈ బ్యాంకు కస్టమర్ ఛర్న్ ఎనలిటిక్స్ ప్లాట్‌ఫాం అధిక ఖచ్చితత్వంతో ఛర్న్ సంభావ్యతను అంచనా వేయడానికి చారిత్రక కస్టమర్ డేటాపై శిక్షణ పొందిన రాండమ్ ఫారెస్ట్ మెషిన్ లెర్నింగ్ మోడల్‌ను ఉపయోగిస్తుంది.',
+        'about_desc': (
+            'ఈ బ్యాంకు కస్టమర్ ఛర్న్ ఎనలిటిక్స్ ప్లాట్‌ఫాం అధిక ఖచ్చితత్వంతో '
+            'ఛర్న్ సంభావ్యతను అంచనా వేయడానికి చారిత్రక కస్టమర్ డేటాపై '
+            'శిక్షణ పొందిన రాండమ్ ఫారెస్ట్ మెషిన్ లెర్నింగ్ మోడల్‌ను ఉపయోగిస్తుంది.'
+        ),
         'about_features': 'ప్రధాన లక్షణాలు',
         'about_feature1': 'రియల్-టైమ్ AI ఛర్న్ ప్రిడిక్షన్‌లు',
         'about_feature2': 'బహుళ-భాషా మద్దతు (ఆంగ్లం, హిందీ, తెలుగు)',

@@ -201,7 +201,7 @@ def generate_sample_data(n_samples: int | None = 5000):
     if real_df is not None and n_samples is not None and len(real_df) >= n_samples:
         # Return the requested number of samples from the real dataset
         return real_df.head(n_samples).copy()
-    elif real_df is not None:
+    if real_df is not None:
         # Use what we have but it's smaller than requested
         print(f'Note: Real dataset has {len(real_df)} rows, using all of them.')
         return real_df.copy()
@@ -269,9 +269,9 @@ def preprocess_data(df):
     y = df['Exited']
 
     scaler = StandardScaler()
-    X_scaled = scaler.fit_transform(X)
+    x_scaled = scaler.fit_transform(X)
 
-    return X_scaled, y, scaler, le_geo, le_gender
+    return x_scaled, y, scaler, le_geo, le_gender
 
 
 def train_model():
