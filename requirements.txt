@@ -24,7 +24,6 @@ pyupgrade==3.15.0
 # Security
 bandit==1.7.5
 semgrep==1.65.0
-trufflehog==2.2.1
 
 # Dependency Audit
 pip-audit==2.7.0
