@@ -1,8 +1,10 @@
 """Tests for the model training module."""
 
 import os
+
 import numpy as np
 import pandas as pd
+
 from app.model import DATASET_PATH, generate_sample_data, get_full_customer_dataset, preprocess_data
 
 

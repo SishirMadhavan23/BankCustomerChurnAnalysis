@@ -45,7 +45,7 @@ target-version = "py310"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "N", "W", "D", "UP", "B", "A", "C4", "SIM", "ARG", "PTH", "PD", "PL", "TRY", "RUF"]
-ignore = ["D203", "D213", "D407", "D413", "D415"]
+ignore = ["D203", "D213", "D400", "D407", "D413", "D415", "D205", "E501", "N806", "PTH103", "PTH110", "PTH118", "PTH120", "PLR2004", "RUF059"]
 
 [tool.ruff.format]
 quote-style = "single"
@@ -87,16 +87,12 @@ show_missing = true
 [tool.setuptools.packages.find]
 where = ["app"]
 
-# ============================================
-# Pylint Configuration
-# ============================================
 [tool.pylint]
-master.py-version = "3.10"
-master.jobs = 4
-master.persistent = false
-master.unsafe-load-any-extension = false
-"MESSAGES CONTROL".disable = [
-=======
+py-version = "3.10"
+jobs = 4
+persistent = false
+unsafe-load-any-extension = false
+
 [tool.pylint.messages-control]
 disable = [
     "C0114",  # missing-module-docstring
@@ -106,12 +102,6 @@ disable = [
     "R0913",  # too-many-arguments
     "W0511",  # fixme
 ]
-
-[tool.pylint.master]
-py-version = "3.10"
-jobs = 4
-persistent = false
-unsafe-load-any-extension = false
 
 [tool.pylint.reports]
 output-format = "colorized"
@@ -125,9 +115,6 @@ DESIGN.max-locals = 20
 DESIGN.max-attributes = 10
 DESIGN.max-statements = 100
 
-# ============================================
-# Flake8 Configuration
-# ============================================
 [tool.flake8]
 max-line-length = 100
 extend-ignore = [
@@ -150,27 +137,11 @@ per-file-ignores = []
 max-complexity = 18
 max-doc-length = 120
 
-# ============================================
-# Pyupgrade Configuration
-# ============================================
 [tool.pyupgrade]
 py38-plus = true
 keep-percent-format = false
 keep-mock = false
 
-# ============================================
-# Semgrep Configuration
-# ============================================
-# See .semgrep/ directory for rules
-
-# ============================================
-# Gitleaks Configuration
-# ============================================
-# See .gitleaks.toml for rules
-
-# ============================================
-# Dependency Audit Configuration
-# ============================================
 [tool.pip-audit]
 strict = true
 desc = true

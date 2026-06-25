@@ -51,7 +51,6 @@ TRANSLATIONS = {
         'about_feature2': 'Multi-language support (English, Hindi, Telugu)',
         'about_feature3': 'Comprehensive analytics dashboard',
         'about_feature4': 'Feature importance analysis',
-        'about_team': 'Built with ❤️ by the Data Science Team',
         'language_name': 'English',
         'yes': 'Yes',
         'no': 'No',
@@ -110,7 +109,6 @@ TRANSLATIONS = {
         'about_feature2': 'बहु-भाषा समर्थन (अंग्रेजी, हिंदी, तेलुगु)',
         'about_feature3': 'व्यापक विश्लेषण डैशबोर्ड',
         'about_feature4': 'विशेषता महत्व विश्लेषण',
-        'about_team': 'डेटा साइंस टीम द्वारा ❤️ से बनाया गया',
         'language_name': 'हिंदी',
         'yes': 'हाँ',
         'no': 'नहीं',
@@ -169,7 +167,6 @@ TRANSLATIONS = {
         'about_feature2': 'బహుళ-భాషా మద్దతు (ఆంగ్లం, హిందీ, తెలుగు)',
         'about_feature3': 'సమగ్ర ఎనలిటిక్స్ డాష్‌బోర్డు',
         'about_feature4': 'ఫీచర్ ప్రాముఖ్యత విశ్లేషణ',
-        'about_team': 'డేటా సైన్స్ టీమ్ ద్వారా ❤️తో నిర్మించబడింది',
         'language_name': 'తెలుగు',
         'yes': 'అవును',
         'no': 'కాదు',
@@ -177,7 +174,7 @@ TRANSLATIONS = {
         'predict_again': 'మళ్ళీ ప్రిడిక్ట్ చేయండి',
         'footer_text': '© 2024 బ్యాంకు కస్టమర్ ఛర్న్ ఎనలిటిక్స్. అన్ని హక్కులు రిజర్వ్ చేయబడ్డాయి.',
         'select_placeholder': '-- ఎంచుకోండి --',
-    }
+    },
 }
 
 

@@ -966,9 +966,6 @@ def show_about():
         - ✅ **Customer directory** with search and filter
         - ✅ **Dataset upload** for custom analysis
 
-        ---
-
-        {get_text(lang, 'about_team')}
         """)
 
     with col2:
