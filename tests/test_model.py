@@ -63,7 +63,7 @@ class TestModelTraining:
     def test_preprocess_data_encoding(self):
         """Test that categorical encoding works correctly."""
         df = generate_sample_data(100)
-        X, y, scaler, le_geo, le_gender = preprocess_data(df)
+        _unused_X, _unused_y, _unused_scaler, le_geo, le_gender = preprocess_data(df)
         assert 'Geography_Encoded' in df.columns
         assert 'Gender_Encoded' in df.columns
         assert set(le_geo.classes_) == {'France', 'Spain', 'Germany'}
